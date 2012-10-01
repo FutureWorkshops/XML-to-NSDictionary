@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'XMLReader'
-  s.version  = '0.0.2'
+  s.version  = 'fw.0.0.2.1'
   s.license  = 'MIT'
   s.summary  = 'An NSXMLParser-based XML to NSDictionary converter.'
   s.homepage = 'https://github.com/RestKit/XML-to-NSDictionary'
@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
                 'Insert-Witty-Name'  => 'tias_dp@hotmail.com',
                 'Christopher Swasey' => 'chris@gateguruapp.com' }
 
-  s.source   = { :git => 'https://github.com/RestKit/XML-to-NSDictionary.git', :tag => '0.0.2' }
+  s.source   = { :git => 'https://github.com/FutureWorkshops/XML-to-NSDictionary.git', :tag => 'fw-v0.0.2.1' }
 
   s.source_files = '*.{h,m}'
 end
