@@ -66,6 +66,7 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
 - (void)dealloc
 {
     [dictionaryStack release];
+    [textStack release];
     [textInProgress release];
     [super dealloc];
 }
@@ -74,9 +75,11 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
 {
     // Clear out any old data
     [dictionaryStack release];
+    [textStack release];
     [textInProgress release];
     
     dictionaryStack = [[NSMutableArray alloc] init];
+    textStack = [[NSMutableArray alloc] init];
     textInProgress = [[NSMutableString alloc] init];
     
     // Initialize the stack with a fresh dictionary
@@ -109,10 +112,10 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
 #pragma mark NSXMLParserDelegate methods
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict
-{   
+{
     // Get the dictionary for the current level in the stack
     NSMutableDictionary *parentDict = [dictionaryStack lastObject];
-
+    
     // Create the child dictionary for the new element, and initilaize it with the attributes
     NSMutableDictionary *childDict = [NSMutableDictionary dictionary];
     [childDict addEntriesFromDictionary:attributeDict];
@@ -132,7 +135,7 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
             // Create an array if it doesn't exist
             array = [NSMutableArray array];
             [array addObject:existingValue];
-
+            
             // Replace the child dictionary with an array of children dictionaries
             [parentDict setObject:array forKey:elementName];
         }
@@ -148,6 +151,11 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     
     // Update the stack
     [dictionaryStack addObject:childDict];
+    
+    // Update the stack for text nodes
+    [textStack addObject:textInProgress];
+    [textInProgress release];
+    textInProgress = [[NSMutableString alloc] init];
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
@@ -170,6 +178,11 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     
     // Pop the current dict
     [dictionaryStack removeLastObject];
+    
+    // Pop the current text string
+    [textInProgress release];
+    textInProgress = [[textStack lastObject] retain];
+    [textStack removeLastObject];
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string

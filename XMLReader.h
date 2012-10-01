@@ -17,6 +17,7 @@ typedef NSUInteger XMLReaderOptions;
 @interface XMLReader : NSObject <NSXMLParserDelegate>
 {
     NSMutableArray *dictionaryStack;
+    NSMutableArray *textStack;
     NSMutableString *textInProgress;
     NSError * __autoreleasing *errorPointer;
 }
